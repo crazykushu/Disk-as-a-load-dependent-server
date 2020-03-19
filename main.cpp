@@ -68,19 +68,22 @@ int main()
     int currentIndex;
 
     int mincyl = 1;
+    int runTimes = 2000000;
     for (int size = 1; size < 21; size++)
     {
         double totalTime = 0.000;
+        long long totalDistance = 0;
         array_constructor(intPtr, size, mincyl, xmax);
         int x = (rand() % (xmax - mincyl + 1)) + mincyl; //random initial position
-        cout << x << endl;
-        for (int i = 0; i < 10000; i++)
+        for (int i = 0; i < runTimes; i++)
         {
             currentIndex = findNext(intPtr, x, size);
             totalTime = totalTime + seekTime(intPtr[currentIndex]);
+            totalDistance = totalDistance + abs(x - intPtr[currentIndex]);
             x = intPtr[currentIndex];
             intPtr[currentIndex] = (rand() % (xmax - mincyl + 1)) + mincyl;
         }
-        cout << "Average access time is " << totalTime / 10000 << "ms for a Q value of: " << size << endl;
+        cout << "Average seek time is " << totalTime / runTimes << "ms for a Q value of: " << size << endl;
+        cout << "Average seek distance is " << totalDistance / runTimes << "cyl for a Q value of: " << size << endl;
     }
 }
