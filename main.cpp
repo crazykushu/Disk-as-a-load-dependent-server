@@ -32,18 +32,21 @@ int *array_constructor(int *&intPtr, int &size, int a, int b)
     }
 }
 
-double seekTime(int position)
+double seekTime(int difference)
 {
     double result;
-    if (position < divider)
+    if (difference < divider && difference >= 1)
     {
-        result = t + c * pow((position - 1), r);
+        result = t + c * pow((difference - 1), r);
+    }
+    else if (difference >= divider)
+    {
+        result = (c * r * (difference - divider)) / pow((divider - 1), (1 - r)) + t + c * pow((divider - 1), r);
     }
     else
     {
-        result = (c * r * (position - divider)) / pow((divider - 1), (1 - r)) + t + c * pow((divider - 1), r);
+      return result;
     }
-
     return result;
 }
 
@@ -68,17 +71,17 @@ int main()
     int currentIndex;
 
     int mincyl = 1;
-    int runTimes = 2000000;
+    int runTimes = 10000;
     for (int size = 1; size < 21; size++)
     {
-        double totalTime = 0.000;
+        double totalTime = 0.0;
         long long totalDistance = 0;
         array_constructor(intPtr, size, mincyl, xmax);
-        int x = (rand() % (xmax - mincyl + 1)) + mincyl; //random initial position
+        int x = (rand() % (xmax - mincyl + 1)) + mincyl; //random initial difference
         for (int i = 0; i < runTimes; i++)
         {
             currentIndex = findNext(intPtr, x, size);
-            totalTime = totalTime + seekTime(intPtr[currentIndex]);
+            totalTime = totalTime + seekTime(abs(x - intPtr[currentIndex]));
             totalDistance = totalDistance + abs(x - intPtr[currentIndex]);
             x = intPtr[currentIndex];
             intPtr[currentIndex] = (rand() % (xmax - mincyl + 1)) + mincyl;
